@@ -1,35 +1,36 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-const routes = [
-  {
-    path: "/",
-    redirect: "/normal",
-  },
-  {
-    path: "/normal",
-    component: () => import("../pages/normal.vue"),
-  },
-  {
-    path: "/normalWithHandleError",
-    component: () => import("../pages/normalWithHandleError.vue"),
-  },
-  {
-    path: "/useSelectHook",
-    component: () => import("../pages/useSelectHook.vue"),
-  },
-  {
-    path: "/useAutoRequestHook",
-    component: () => import("../pages/useAutoRequestHook.vue"),
-  },
-  {
-    path: "/skeletonView",
-    component: () => import("../pages/skeletonView.vue"),
-  },
-  {
-    path: "/skeletonViewDirectives",
-    component: () => import("../pages/skeletonViewDirectives.vue"),
-  },
-];
+const files = import.meta.glob('../pages/*.vue')
+
+const routes = []
+for (const [path, file] of Object.entries(files)) {
+  const shortName = path.substring(path.lastIndexOf('/'), path.length - 4)
+  routes.push({
+    path: shortName,
+    component: file,
+  })
+}
+
+// 根路径重定向
+routes.unshift({
+  path: "/",
+  redirect: routes[0].path,
+});
+
+// const routes = [
+//   {
+//     path: "/",
+//     redirect: "/normal",
+//   },
+//   {
+//     path: "/normal",
+//     component: () => import("../pages/normal.vue"),
+//   },
+//   {
+//     path: "/normalWithHandleError",
+//     component: () => import("../pages/normalWithHandleError.vue"),
+//   },
+// ];
 
 export default createRouter({
   history: createWebHashHistory(),
